@@ -1,0 +1,60 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background-color: #282c34;
+  color: white;
+}
+
+.App-header {
+  padding: 2rem;
+  background-color: #20232a;
+}
+
+.App-header h1 {
+  margin: 0 0 1rem 0;
+  font-size: 2.5rem;
+}
+
+.App-header p {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.App-header .healthy {
+  color: #61dafb;
+  font-weight: bold;
+}
+
+.App-header .error {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.App-header .loading {
+  color: #ffd93d;
+  font-weight: bold;
+}
+
+.App-main {
+  padding: 2rem;
+}
+
+.App-main h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.App-main ul {
+  list-style: none;
+  padding: 0;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.App-main li {
+  background-color: #20232a;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+}
