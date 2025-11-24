@@ -1,0 +1,19 @@
+# Python Virtual Environment
+venv/
+.venv/
+
+# Python compiled bytecode
+*.pyc
+__pycache__/
+
+# Dependencies (if installed outside venv)
+dist/
+build/
+*.egg-info/
+
+# Operating System Files
+.DS_Store
+
+# Editor/IDE Files
+.vscode/
+.idea/
