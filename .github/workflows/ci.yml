@@ -12,33 +12,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # 2️⃣ Node setup
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
+      # 3️⃣ Install dependencies in React app folder
       - name: Install dependencies
         run: npm install
         working-directory: ./react-with-flask
 
-      # Skip (React app has no test script yet)
+      # 4️⃣ Skip tests for now (no test script yet)
       # - name: Run tests
       #   run: npm test
       #   working-directory: ./react-with-flask
 
+      # 5️⃣ Build React app
       - name: Build app
         run: npm run build
         working-directory: ./react-with-flask
 
-      # Not needed right now
+      # 6️⃣ Optional: Deploy to Vercel later
       # - name: Deploy to Vercel
       #   uses: amondnet/vercel-action@v20
       #   with:
       #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
-      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}       # optional
-      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} # optional
       #     working-directory: ./react-with-flask
       #     prod: true
