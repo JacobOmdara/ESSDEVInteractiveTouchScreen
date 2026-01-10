@@ -16,18 +16,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # 2️⃣ Node setup
+      # 2️⃣ Set up Node 22
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
 
-      # 3️⃣ Install dependencies in React app folder
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
         working-directory: ./react-with-flask
 
-      # 4️⃣ Skip tests for now (no test script yet)
+      # 4️⃣ Skip tests (no test script yet)
       # - name: Run tests
       #   run: npm test
       #   working-directory: ./react-with-flask
@@ -37,7 +37,7 @@ jobs:
         run: npm run build
         working-directory: ./react-with-flask
 
-      # 6️⃣ Optional: Deploy to Vercel later
+      # 6️⃣ Optional: deploy to Vercel later
       # - name: Deploy to Vercel
       #   uses: amondnet/vercel-action@v20
       #   with:
