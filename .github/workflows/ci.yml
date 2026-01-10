@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
 
@@ -24,10 +24,21 @@ jobs:
         run: npm install
         working-directory: ./react-with-flask
 
-      - name: Run tests
-        run: npm test
-        working-directory: ./react-with-flask
+      # Skip (React app has no test script yet)
+      # - name: Run tests
+      #   run: npm test
+      #   working-directory: ./react-with-flask
 
       - name: Build app
         run: npm run build
         working-directory: ./react-with-flask
+
+      # Not needed right now
+      # - name: Deploy to Vercel
+      #   uses: amondnet/vercel-action@v20
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}       # optional
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} # optional
+      #     working-directory: ./react-with-flask
+      #     prod: true
