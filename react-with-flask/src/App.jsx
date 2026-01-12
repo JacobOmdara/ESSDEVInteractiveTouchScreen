@@ -91,7 +91,7 @@ function MainMenu() {
         <h1 style={{ 
           fontSize: '48px', 
           color: 'white', 
-          marginBottom: '10px',
+          marginBottom: '-15px',
           fontWeight: '700'
         }}>
           BMH Interactive Display
@@ -105,7 +105,7 @@ function MainMenu() {
         gridTemplateColumns: 'repeat(4, 1fr)',
         gap: '30px',
         maxWidth: '1400px',
-        margin: '0 auto',
+        margin: '60px auto',
         flex: 1,
       }}>
         {apps.map((app) => (
@@ -122,7 +122,8 @@ function MainMenu() {
               backdropFilter: 'blur(10px)',
               textAlign: 'center',
               color: 'white',
-              minHeight: '200px',
+              height: '300px',
+              width: '300px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
