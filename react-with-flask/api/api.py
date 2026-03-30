@@ -3,6 +3,7 @@ from flask import Flask
 # You'll need flask_cors and jsonify for your eventual dashboard endpoints
 from flask import jsonify 
 from flask_cors import CORS 
+import requests
 
 app = Flask(__name__)
 CORS(app) # Necessary to allow your React frontend (on port 3000) to connect
@@ -16,9 +17,30 @@ def get_current_time():
 # Add your required Empty Endpoints here:
 # ----------------------------------------------------
 
-@app.route('/weather')
-def weather():
-    return jsonify({"service": "weather", "status": "placeholder"})
+@app.route('/api/weather')
+def get_weather():
+    # Coordinates for Kingston, Ontario
+    lat = 44.2312
+    lon = -76.4860
+    
+    # Open-Meteo API URL for current weather
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,weather_code&timezone=America/New_York"
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status() # Raise an error for bad status codes
+        data = response.json()
+        
+        # Extract the current temperature
+        current_temp = data['current']['temperature_2m']
+        
+        return jsonify({
+            "city": "Kingston",
+            "temperature": current_temp,
+            "unit": "°C"
+        })
+    except Exception as e:
+        return jsonify({"error": "Failed to fetch weather data", "details": str(e)}), 500
 
 @app.route('/transit')
 def transit():
