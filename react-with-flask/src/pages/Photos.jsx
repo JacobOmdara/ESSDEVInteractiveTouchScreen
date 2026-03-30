@@ -32,9 +32,10 @@ function PhotoGallery() {
         if (!response.Contents || response.Contents.length === 0) {
           setImages([]);
         } else {
-          const s3Urls = response.Contents.map(file => ({
+            const cloudfrontBase = import.meta.env.VITE_CLOUDFRONT_URL;
+            const s3Urls = response.Contents.map(file => ({
             key: file.Key,
-            url: `https://${bucketName}.s3.amazonaws.com/${file.Key}`
+            url: `${cloudfrontBase}/${file.Key}`
           }));
           setImages(s3Urls);
         }
