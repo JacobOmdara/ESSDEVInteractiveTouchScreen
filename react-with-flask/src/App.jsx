@@ -51,10 +51,12 @@
 // export default App;
 
 import { Routes, Route, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react';
 import Weather from './pages/Weather'
 import Transit from './pages/Transit'
 import Events from './pages/Events'
 import Loading from './pages/Loading'
+import PhotoGallery from './pages/Photos'
 import Error from './pages/Error'
 import NotFound from './pages/NotFound'
 import './App.css'
@@ -67,7 +69,7 @@ function MainMenu() {
     { id: 'transit', icon: '🚌', name: 'Transit', route: '/transit' },
     { id: 'events', icon: '📅', name: 'Events', route: '/events' },
     { id: 'map', icon: '🗺️', name: 'Campus Map', route: '/loading' },
-    { id: 'photo', icon: '📸', name: 'Photo Booth', route: '/loading' },
+    { id: 'photo', icon: '📸', name: 'Photo Booth', route: '/photos' },
     { id: 'rooms', icon: '🚪', name: 'Room Booking', route: '/loading' },
     { id: 'news', icon: '📰', name: 'News', route: '/loading' },
     { id: 'alumni', icon: '🎓', name: 'Alumni', route: '/loading' },
@@ -76,6 +78,13 @@ function MainMenu() {
   const handleAppClick = (route) => {
     navigate(route);
   };
+
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div style={{
@@ -87,17 +96,22 @@ function MainMenu() {
       flexDirection: 'column',
     }}>
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <h1 style={{ 
-          fontSize: '48px', 
-          color: 'white', 
-          marginBottom: '-15px',
-          fontWeight: '700'
-        }}>
-          BMH Interactive Display
-        </h1>
-
-      </div>
+  <div style={{ textAlign: 'center', marginBottom: '20px', marginTop: '30px' }}>
+    <h1 style={{
+      fontSize: '48px',
+      color: 'white',
+      marginBottom: '10px',
+      fontWeight: '700'
+    }}>
+      Welcome to Beamish Munro Hall
+    </h1>
+    <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '24px', margin: 0 }}>
+      {'It is '}
+      {time.toLocaleDateString('en-CA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+      {' · '}
+      {time.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+    </p>
+  </div>
 
       {/* App Grid */}
       <div style={{
@@ -159,6 +173,7 @@ function App() {
       <Route path="/transit" element={<Transit />} />
       <Route path="/events" element={<Events />} />
       <Route path="/loading" element={<Loading />} />
+      <Route path="/photos" element={<PhotoGallery />} />
       <Route path="/error" element={<Error />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
