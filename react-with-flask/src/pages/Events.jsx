@@ -5,64 +5,10 @@ const Events = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Placeholder data - replace with Google Calendar API call later
-  const [events, setEvents] = useState([
-    {
-      time: '2:00 PM',
-      title: 'ESSDev Team Meeting',
-      location: 'BMH 201',
-      type: 'Meeting',
-      color: '#8b5cf6',
-    },
-    {
-      time: '4:30 PM',
-      title: 'Engineering Networking Social',
-      location: 'ILC Atrium',
-      type: 'Social',
-      color: '#ec4899',
-    },
-    {
-      time: '6:00 PM',
-      title: 'Robotics Workshop',
-      location: 'BMH Lab',
-      type: 'Workshop',
-      color: '#f59e0b',
-    },
-    {
-      time: '7:30 PM',
-      title: 'Study Group - ELEC 279',
-      location: 'BMH 306',
-      type: 'Study',
-      color: '#10b981',
-    },
-    {
-      time: 'Feb 12',
-      title: 'Engineering Design Showcase',
-      location: 'JDUC',
-      type: 'Event',
-      color: '#3b82f6',
-    },
-    {
-      time: 'Feb 15',
-      title: 'Career Fair',
-      location: 'ARC',
-      type: 'Career',
-      color: '#ef4444',
-    },
-  ]);
-
   // Update clock
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
-  }, []);
-
-  // TODO: Replace with actual Google Calendar API call
-  useEffect(() => {
-    // fetch('http://localhost:5000/api/events')
-    //   .then(res => res.json())
-    //   .then(data => setEvents(data))
-    //   .catch(err => console.error('Events API error:', err));
   }, []);
 
   return (
@@ -72,6 +18,8 @@ const Events = () => {
       padding: '30px',
       fontFamily: 'system-ui, -apple-system, sans-serif',
       color: 'white',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
       {/* Header */}
       <div style={{
@@ -118,73 +66,27 @@ const Events = () => {
         </div>
       </div>
 
-      {/* Events List */}
+      {/* Google Calendar Embed */}
       <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
+        flex: 1,
+        background: 'rgba(255,255,255,0.15)',
+        backdropFilter: 'blur(10px)',
+        border: '2px solid rgba(255,255,255,0.2)',
+        borderRadius: '20px',
+        padding: '20px',
+        overflow: 'hidden',
       }}>
-        {events.map((event, idx) => (
-          <div
-            key={idx}
-            style={{
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              border: '2px solid rgba(255,255,255,0.2)',
-              borderLeft: `6px solid ${event.color}`,
-              borderRadius: '15px',
-              padding: '30px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              transition: 'all 0.3s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateX(10px)';
-              e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateX(0)';
-              e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-            }}
-          >
-            <div style={{ flex: 1 }}>
-              <div style={{
-                display: 'inline-block',
-                background: event.color,
-                padding: '6px 14px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '700',
-                marginBottom: '12px',
-              }}>
-                {event.type}
-              </div>
-              <h3 style={{
-                margin: '0 0 10px 0',
-                fontSize: '32px',
-                fontWeight: '700',
-              }}>
-                {event.title}
-              </h3>
-              <div style={{ fontSize: '20px', opacity: 0.9 }}>
-                📍 {event.location}
-              </div>
-            </div>
-            <div style={{
-              textAlign: 'right',
-              fontSize: '28px',
-              fontWeight: '700',
-              background: 'rgba(255,255,255,0.2)',
-              padding: '20px 30px',
-              borderRadius: '12px',
-            }}>
-              🕐 {event.time}
-            </div>
-          </div>
-        ))}
+        <iframe
+          src="https://calendar.google.com/calendar/embed?src=a04efe18b853877aea72c11273f54f62d805d8748d45dc230893c89fbfd1af3c%40group.calendar.google.com&color=%237B1FA2&src=en.canadian%23holiday%40group.v.calendar.google.com&src=53f4cd14eddad162fb532e92266db04c4dc166547e3457c383b53953c2fac6dd%40group.calendar.google.com&color=%23AB8B00&src=6969c28f872c50b822c9ff8dcc715b0beff7f3e85d1668ddfdd2c03b6b65e2e2%40group.calendar.google.com&color=%23B1365F&ctz=America%2FToronto&mode=WEEK&showTabs=0&showCalendars=0&showTitle=0&showPrint=0"
+          style={{
+            width: '100%',
+            height: '100%',
+            border: 'none',
+            borderRadius: '12px',
+          }}
+          sandbox="allow-scripts allow-same-origin"
+          title="Queen's Events Calendar"
+        />
       </div>
     </div>
   );

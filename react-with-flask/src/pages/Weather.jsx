@@ -4,25 +4,9 @@ import { useNavigate } from 'react-router-dom';
 const Weather = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
-
-  // Placeholder data - replace with OpenWeather API call later
-  const [weatherData, setWeatherData] = useState({
-    current: {
-      temp: 22,
-      feelsLike: 20,
-      condition: 'Partly Cloudy',
-      icon: '⛅',
-      humidity: 65,
-      windSpeed: 12,
-    },
-    forecast: [
-      { day: 'Today', high: 25, low: 18, condition: 'Partly Cloudy', icon: '⛅', precip: 20 },
-      { day: 'Tomorrow', high: 23, low: 16, condition: 'Rain', icon: '🌧️', precip: 80 },
-      { day: 'Wednesday', high: 26, low: 19, condition: 'Sunny', icon: '☀️', precip: 10 },
-      { day: 'Thursday', high: 24, low: 17, condition: 'Cloudy', icon: '☁️', precip: 30 },
-      { day: 'Friday', high: 27, low: 20, condition: 'Sunny', icon: '☀️', precip: 5 },
-    ]
-  });
+  const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Update clock
   useEffect(() => {
@@ -30,13 +14,76 @@ const Weather = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // TODO: Replace with actual OpenWeather API call
+  // Fetch real weather data from Flask API
   useEffect(() => {
-    // fetch('http://localhost:5000/api/weather')
-    //   .then(res => res.json())
-    //   .then(data => setWeatherData(data))
-    //   .catch(err => console.error('Weather API error:', err));
+    fetch('/api/weather')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.error) throw new Error(data.error);
+        setWeatherData(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
   }, []);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}>
+        <h2 style={{ fontSize: '36px' }}>Loading Kingston weather...</h2>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}>
+        <h2 style={{ fontSize: '36px', color: '#fca5a5' }}>Error loading weather: {error}</h2>
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            marginTop: '30px',
+            background: 'rgba(255,255,255,0.2)',
+            border: '2px solid rgba(255,255,255,0.3)',
+            borderRadius: '10px',
+            padding: '15px 30px',
+            color: 'white',
+            fontSize: '20px',
+            cursor: 'pointer',
+            fontWeight: '600',
+          }}
+        >
+          ← Back to Menu
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{
@@ -77,7 +124,7 @@ const Weather = () => {
               🌤️ Weather
             </h1>
             <p style={{ margin: '5px 0 0 0', fontSize: '18px', opacity: 0.9 }}>
-              Kingston, ON
+              {weatherData?.city || 'Kingston, ON'}
             </p>
           </div>
         </div>
@@ -102,87 +149,15 @@ const Weather = () => {
         maxWidth: '1400px',
         margin: '0 auto 30px auto',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
-            <div style={{ fontSize: '120px' }}>
-              {weatherData.current.icon}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '96px', fontWeight: '900', lineHeight: 1 }}>
+              {weatherData?.temperature}{weatherData?.unit || '°C'}
             </div>
-            <div>
-              <div style={{ fontSize: '96px', fontWeight: '900', lineHeight: 1 }}>
-                {weatherData.current.temp}°C
-              </div>
-              <div style={{ fontSize: '28px', opacity: 0.9, marginTop: '10px' }}>
-                {weatherData.current.condition}
-              </div>
-              <div style={{ fontSize: '20px', opacity: 0.8, marginTop: '5px' }}>
-                Feels like {weatherData.current.feelsLike}°C
-              </div>
+            <div style={{ fontSize: '28px', opacity: 0.9, marginTop: '10px' }}>
+              Current Temperature
             </div>
           </div>
-          
-          <div style={{ display: 'flex', gap: '40px', fontSize: '20px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '36px', marginBottom: '5px' }}>💧</div>
-              <div style={{ fontWeight: '700' }}>{weatherData.current.humidity}%</div>
-              <div style={{ opacity: 0.8 }}>Humidity</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '36px', marginBottom: '5px' }}>💨</div>
-              <div style={{ fontWeight: '700' }}>{weatherData.current.windSpeed} km/h</div>
-              <div style={{ opacity: 0.8 }}>Wind</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 5-Day Forecast */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '20px' }}>
-          5-Day Forecast
-        </h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: '20px',
-        }}>
-          {weatherData.forecast.map((day, idx) => (
-            <div
-              key={idx}
-              style={{
-                background: 'rgba(255,255,255,0.15)',
-                backdropFilter: 'blur(10px)',
-                border: '2px solid rgba(255,255,255,0.2)',
-                borderRadius: '15px',
-                padding: '25px',
-                textAlign: 'center',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-              }}
-            >
-              <div style={{ fontSize: '22px', fontWeight: '700', marginBottom: '15px' }}>
-                {day.day}
-              </div>
-              <div style={{ fontSize: '64px', margin: '15px 0' }}>
-                {day.icon}
-              </div>
-              <div style={{ fontSize: '28px', fontWeight: '700' }}>
-                {day.high}° / {day.low}°
-              </div>
-              <div style={{ fontSize: '16px', opacity: 0.9, marginTop: '10px' }}>
-                {day.condition}
-              </div>
-              <div style={{ fontSize: '14px', opacity: 0.8, marginTop: '10px' }}>
-                💧 {day.precip}% chance
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>
