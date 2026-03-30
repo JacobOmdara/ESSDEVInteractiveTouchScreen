@@ -43,7 +43,7 @@ def extract_static_data(stop_id):
 
     # Get the current time in HH:MM:SS format to find upcoming trips, give 20 minute leeway to help student prepare
     now = datetime.now()
-    leeway = now + timedelta(minutes = 20)
+    leeway = now + timedelta(minutes = 15)
 
     leeway_str = leeway.strftime("%H:%M:%S")
 

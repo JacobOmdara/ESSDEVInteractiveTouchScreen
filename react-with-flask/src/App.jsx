@@ -55,6 +55,7 @@ import Weather from './pages/Weather'
 import Transit from './pages/Transit'
 import Events from './pages/Events'
 import Loading from './pages/Loading'
+import PhotoGallery from './pages/Photos'
 import Error from './pages/Error'
 import NotFound from './pages/NotFound'
 import './App.css'
@@ -67,7 +68,7 @@ function MainMenu() {
     { id: 'transit', icon: '🚌', name: 'Transit', route: '/transit' },
     { id: 'events', icon: '📅', name: 'Events', route: '/events' },
     { id: 'map', icon: '🗺️', name: 'Campus Map', route: '/loading' },
-    { id: 'photo', icon: '📸', name: 'Photo Booth', route: '/loading' },
+    { id: 'photo', icon: '📸', name: 'Photo Booth', route: '/photos' },
     { id: 'rooms', icon: '🚪', name: 'Room Booking', route: '/loading' },
     { id: 'news', icon: '📰', name: 'News', route: '/loading' },
     { id: 'alumni', icon: '🎓', name: 'Alumni', route: '/loading' },
@@ -94,7 +95,7 @@ function MainMenu() {
           marginBottom: '-15px',
           fontWeight: '700'
         }}>
-          BMH Interactive Display
+          Welcome to Beamish Munro Hall
         </h1>
 
       </div>
@@ -159,6 +160,7 @@ function App() {
       <Route path="/transit" element={<Transit />} />
       <Route path="/events" element={<Events />} />
       <Route path="/loading" element={<Loading />} />
+      <Route path="/photos" element={<PhotoGallery />} />
       <Route path="/error" element={<Error />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
