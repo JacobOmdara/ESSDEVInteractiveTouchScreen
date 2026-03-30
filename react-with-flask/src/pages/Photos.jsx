@@ -77,7 +77,6 @@ function PhotoGallery() {
     cursor: disabled ? 'default' : 'pointer',
     flexShrink: 0,
     alignSelf: 'center',
-    transition: 'background 0.2s',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -143,8 +142,11 @@ function PhotoGallery() {
               borderRadius: '10px',
               cursor: 'pointer',
             }}
+<<<<<<< HEAD
+=======
             onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
             onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+>>>>>>> fb7a6893d9ab7769d5b607224ce7d552f712e87c
           >
             ← Back
           </button>
@@ -164,8 +166,6 @@ function PhotoGallery() {
             onClick={handlePrev}
             disabled={atStart}
             style={navButtonStyle(atStart)}
-            onMouseEnter={(e) => { if (!atStart) e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; }}
-            onMouseLeave={(e) => { if (!atStart) e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
           >
             ‹
           </button>
@@ -190,15 +190,6 @@ function PhotoGallery() {
                       overflow: 'hidden',
                       cursor: 'pointer',
                       background: '#222',
-                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.05)';
-                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.6)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow = 'none';
                     }}
                   >
                     <img
@@ -217,8 +208,6 @@ function PhotoGallery() {
             onClick={handleNext}
             disabled={atEnd}
             style={navButtonStyle(atEnd)}
-            onMouseEnter={(e) => { if (!atEnd) e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; }}
-            onMouseLeave={(e) => { if (!atEnd) e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
           >
             ›
           </button>
@@ -257,8 +246,6 @@ function PhotoGallery() {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
           >
             ‹
           </button>
@@ -292,8 +279,6 @@ function PhotoGallery() {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
           >
             ›
           </button>
@@ -310,8 +295,6 @@ function PhotoGallery() {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
           >
             ✕
           </button>
