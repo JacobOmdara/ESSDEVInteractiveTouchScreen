@@ -4,6 +4,8 @@ from flask import Flask
 from flask import jsonify 
 from flask_cors import CORS 
 import requests
+from google.transit import gtfs_realtime_pb2
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app) # Necessary to allow your React frontend (on port 3000) to connect
@@ -45,6 +47,43 @@ def get_weather():
 @app.route('/transit')
 def transit():
     return jsonify({"service": "transit", "status": "placeholder"})
+
+GTFS_URL = "https://api.cityofkingston.ca/gtfs-realtime/vehicleupdates.pb"
+STATUS_MAP = {0: "Incoming", 1: "Stopped", 2: "En Route"}
+@app.route('/api/buses/<route_id>', methods=['GET'])
+def get_buses_by_route(route_id):
+    try:
+        response = requests.get(GTFS_URL, timeout=5)
+        response.raise_for_status()
+        
+        feed = gtfs_realtime_pb2.FeedMessage()
+        feed.ParseFromString(response.content)
+        
+        matches = []
+        for entity in feed.entity:
+            if entity.HasField('vehicle'):
+                v = entity.vehicle
+                
+                # Kingston route_ids are strings like "701"
+                if v.trip.route_id == str(route_id):
+                    matches.append({
+                        "id": v.vehicle.id,
+                        "label": v.vehicle.label or "Bus",
+                        "lat": v.position.latitude,
+                        "lon": v.position.longitude,
+                        "status": STATUS_MAP.get(v.current_status, "Unknown"),
+                        "last_updated": datetime.fromtimestamp(v.timestamp).strftime('%H:%M:%S')
+                    })
+        
+        return jsonify({
+            "route": route_id,
+            "buses": matches,
+            "count": len(matches),
+            "server_time": datetime.now().strftime('%H:%M:%S')
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/events')
 def events():
