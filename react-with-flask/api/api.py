@@ -25,24 +25,38 @@ def get_weather():
     lat = 44.2312
     lon = -76.4860
     
-    # Open-Meteo API URL for current weather
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,weather_code&timezone=America/New_York"
+    # Notice the URL change: we are asking for daily max, min, and weather codes
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=America/New_York"
     
     try:
         response = requests.get(url)
-        response.raise_for_status() # Raise an error for bad status codes
+        response.raise_for_status() 
         data = response.json()
         
-        # Extract the current temperature
-        current_temp = data['current']['temperature_2m']
+        # Open-Meteo returns parallel arrays for daily data. Let's extract them:
+        daily_data = data['daily']
+        dates = daily_data['time']
+        max_temps = daily_data['temperature_2m_max']
+        min_temps = daily_data['temperature_2m_min']
+        weather_codes = daily_data['weather_code']
         
+        # Package the 7 days into a nice list for the frontend
+        forecast = []
+        for i in range(len(dates)):
+            forecast.append({
+                "date": dates[i],
+                "max_temp": round(max_temps[i]), # Rounding to make it look cleaner
+                "min_temp": round(min_temps[i]),
+                "weather_code": weather_codes[i]
+            })
+            
         return jsonify({
             "city": "Kingston",
-            "temperature": current_temp,
+            "forecast": forecast,
             "unit": "°C"
         })
     except Exception as e:
-        return jsonify({"error": "Failed to fetch weather data", "details": str(e)}), 500
+        return jsonify({"error": "Failed to fetch weather forecast", "details": str(e)}), 500
 
 @app.route('/transit')
 def transit():
