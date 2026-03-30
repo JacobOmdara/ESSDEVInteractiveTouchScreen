@@ -142,6 +142,11 @@ function PhotoGallery() {
               borderRadius: '10px',
               cursor: 'pointer',
             }}
+<<<<<<< HEAD
+=======
+            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+>>>>>>> fb7a6893d9ab7769d5b607224ce7d552f712e87c
           >
             ← Back
           </button>
