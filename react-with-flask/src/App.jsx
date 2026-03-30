@@ -51,6 +51,7 @@
 // export default App;
 
 import { Routes, Route, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react';
 import Weather from './pages/Weather'
 import Transit from './pages/Transit'
 import Events from './pages/Events'
@@ -78,6 +79,13 @@ function MainMenu() {
     navigate(route);
   };
 
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -88,17 +96,22 @@ function MainMenu() {
       flexDirection: 'column',
     }}>
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <h1 style={{ 
-          fontSize: '48px', 
-          color: 'white', 
-          marginBottom: '-15px',
-          fontWeight: '700'
-        }}>
-          Welcome to Beamish Munro Hall
-        </h1>
-
-      </div>
+  <div style={{ textAlign: 'center', marginBottom: '20px', marginTop: '30px' }}>
+    <h1 style={{
+      fontSize: '48px',
+      color: 'white',
+      marginBottom: '10px',
+      fontWeight: '700'
+    }}>
+      Welcome to Beamish Munro Hall
+    </h1>
+    <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '24px', margin: 0 }}>
+      {'It is '}
+      {time.toLocaleDateString('en-CA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+      {' · '}
+      {time.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+    </p>
+  </div>
 
       {/* App Grid */}
       <div style={{
