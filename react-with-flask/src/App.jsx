@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef} from 'react';
 import Weather from './pages/Weather'
 import Transit from './pages/Transit'
 import Events from './pages/Events'
@@ -8,10 +8,16 @@ import PhotoGallery from './pages/Photos'
 import Map from './pages/Map'
 import Error from './pages/Error'
 import NotFound from './pages/NotFound'
+import Booking from './pages/Booking'
 import './App.css'
 
 function MainMenu() {
   const navigate = useNavigate();
+
+  // For state checking for booking room popup
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const openBooking = () => setBookingOpen(true);
+  const closeBooking = () => setBookingOpen(false);
 
   const apps = [
     { id: 'weather', icon: null, gif: '/weathericon.gif',  name: 'Weather', route: '/weather' },
@@ -19,7 +25,7 @@ function MainMenu() {
     { id: 'events', icon: null, gif: '/calendaricon.gif', name: 'Events', route: '/events' },
     { id: 'map', icon: null, gif: '/mapicon.gif', name: 'Campus Map', route: '/map' },
     { id: 'photo', icon: null, gif: '/photoicon.gif', name: 'Photo Album', route: '/photos' },
-    { id: 'rooms', icon: '🚪', name: 'Room Booking', route: '/loading' },
+    { id: 'rooms', icon: '🚪', name: 'Room Booking', action: openBooking }, // Room booking is a pop up, not its own page
     { id: 'news', icon: '📰', name: 'News', route: '/loading' },
     { id: 'alumni', icon: '🎓', name: 'Alumni', route: '/loading' },
   ];
@@ -74,7 +80,7 @@ function MainMenu() {
         {apps.map((app) => (
           <button
             key={app.id}
-            onClick={() => navigate(app.route)}
+            onClick={() => app.action ? app.action() : navigate(app.route)} //Checks if should use app action (for room popup) or nav normally
             style={{
               background: 'rgba(255, 255, 255, 0.2)',
               border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -113,6 +119,7 @@ function MainMenu() {
           </button>
         ))}
       </div>
+      <Booking isOpen={bookingOpen} onClose={closeBooking} />
     </div>
   );
 }
