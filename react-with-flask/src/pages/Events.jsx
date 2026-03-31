@@ -13,7 +13,7 @@ const Events = () => {
 
   return (
     <div style={{
-      minHeight: '100vh',
+      height: '100vh',
       background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
       padding: '30px',
       fontFamily: 'system-ui, -apple-system, sans-serif',

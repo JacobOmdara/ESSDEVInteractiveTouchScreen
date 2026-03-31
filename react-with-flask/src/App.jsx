@@ -5,6 +5,7 @@ import Transit from './pages/Transit'
 import Events from './pages/Events'
 import Loading from './pages/Loading'
 import PhotoGallery from './pages/Photos'
+import Minesweeper from './pages/Minesweeper';
 import Map from './pages/Map'
 import Error from './pages/Error'
 import NotFound from './pages/NotFound'
@@ -19,9 +20,9 @@ function MainMenu() {
     { id: 'events', icon: null, gif: '/calendaricon.gif', name: 'Events', route: '/events' },
     { id: 'map', icon: null, gif: '/mapicon.gif', name: 'Campus Map', route: '/map' },
     { id: 'photo', icon: null, gif: '/photoicon.gif', name: 'Photo Album', route: '/photos' },
-    { id: 'rooms', icon: '🚪', name: 'Room Booking', route: '/loading' },
-    { id: 'news', icon: '📰', name: 'News', route: '/loading' },
-    { id: 'alumni', icon: '🎓', name: 'Alumni', route: '/loading' },
+    { id: 'rooms', icon: null, gif: '/bookingicon.gif', name: 'Room Booking', route: '/loading' },
+    { id: 'news', icon: null, gif: 'newsicon.gif', name: 'News', route: '/loading' },
+    { id: 'minesweeper', icon: null, gif: '/commicon.gif' , name: 'Commsweeper', route: '/minesweeper' },
   ];
 
   const [time, setTime] = useState(new Date());
@@ -37,7 +38,7 @@ function MainMenu() {
       style={{
         minHeight: '100vh',
         padding: '40px',
-        fontFamily: 'system-ui, -apple-system, sans-serif',
+        fontFamily: 'serif',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -45,17 +46,18 @@ function MainMenu() {
       {/* Header */}
       <div style={{ textAlign: 'center', background: 'rgba(103, 58, 147, 0.75)', 
         borderRadius: '20px',
-        padding: '30px 40px', marginBottom: '50px', marginTop: '70px' }}>
+        padding: '55px 40px', marginBottom: '0px', marginTop: '170px' }}>
         <h1 style={{
-          fontSize: '60px',
+          fontSize: '65px',
           color: 'white',
+          fontFamily: '"Volkhov", serif',
           marginBottom: '10px',
           fontWeight: '700'
         }}>
-          Welcome to Beamish Munro Hall
+          Welcome to YOUR Engineering Building!
         </h1>
-        <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '30px', margin: 0 }}>
-          {'It is '}
+        <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '40px', margin: 0 }}>
+          {'Beamish Munro Hall'} <br></br>
           {time.toLocaleDateString('en-CA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           {' · '}
           {time.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
@@ -66,9 +68,9 @@ function MainMenu() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '30px',
+        gap: '100px',
         maxWidth: '1500px',
-        margin: '60px auto',
+        margin: '180px auto',
         flex: 1,
       }}>
         {apps.map((app) => (
@@ -128,6 +130,7 @@ function App() {
       <Route path="/photos" element={<PhotoGallery />} />
       <Route path="/error" element={<Error />} />
       <Route path="/map" element={<Map />} />
+      <Route path="/minesweeper" element={<Minesweeper />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
