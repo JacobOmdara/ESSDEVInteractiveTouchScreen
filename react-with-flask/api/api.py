@@ -5,7 +5,8 @@ from flask import jsonify
 from flask_cors import CORS 
 import requests
 from google.transit import gtfs_realtime_pb2
-from datetime import datetime
+from datetime import datetime, timedelta
+import feedparser                          # add this line
 
 app = Flask(__name__)
 CORS(app) # Necessary to allow your React frontend (on port 3000) to connect
@@ -107,6 +108,45 @@ def events():
 def health_check():
     return jsonify({"status": "healthy"})
 
+_news_cache = {"data": None, "fetched_at": None}
+NEWS_CACHE_TTL = timedelta(weeks=1)  # also rename to avoid clashing with CACHE_TTL if you add more later
+@app.route('/api/news')
+def get_news():
+    global _news_cache
+    if _news_cache["data"] and datetime.now() - _news_cache["fetched_at"] < NEWS_CACHE_TTL:
+        return jsonify(_news_cache["data"])
+    
+    feed = feedparser.parse("https://www.queensjournal.ca/feed")
+    articles = [
+        {
+            "title": e.title,
+            "link": e.link,
+            "author": getattr(e, "author", None),
+            "pubDate": e.published,
+            "categories": [t.term for t in getattr(e, "tags", [])],
+            "thumbnail": getattr(e, "media_thumbnail", [{}])[0].get("url"),
+        }
+        for e in feed.entries
+    ]
+    _news_cache = {"data": articles, "fetched_at": datetime.now()}
+    return jsonify(articles)
+
+@app.route('/api/golden-words')
+def get_golden_words():
+    try:
+        res = requests.get('https://goldenwords.ca/?page_id=63', timeout=5)
+        res.raise_for_status()
+        html = res.text
+
+        import re
+        match = re.search(r'<iframe[^>]+src="(https://docs\.google\.com/viewer[^"]+)"', html)
+        if not match:
+            return jsonify({"error": "Could not find PDF link"}), 404
+
+        pdf_url = match.group(1).replace('&amp;', '&')
+        return jsonify({"pdf_url": pdf_url})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 # ----------------------------------------------------
 # CRUCIAL RUN BLOCK:
 # ----------------------------------------------------

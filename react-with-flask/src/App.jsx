@@ -10,6 +10,7 @@ import Map from './pages/Map'
 import Error from './pages/Error'
 import NotFound from './pages/NotFound'
 import Booking from './pages/Booking'
+import News from './pages/News'
 import './App.css'
 
 function MainMenu() {
@@ -27,7 +28,7 @@ function MainMenu() {
     { id: 'map', icon: null, gif: '/mapicon.gif', name: 'Campus Map', route: '/map' },
     { id: 'photo', icon: null, gif: '/photoicon.gif', name: 'Photo Album', route: '/photos' },
     { id: 'rooms', icon: null, gif: '/bookingicon.gif', name: 'Room Booking', action: openBooking }, // Room booking is a pop up, not its own page
-    { id: 'news', icon: null, gif: 'newsicon.gif', name: 'News', route: '/loading' },
+    { id: 'news', icon: null, gif: 'newsicon.gif', name: 'News', route: '/news' },
     { id: 'minesweeper', icon: null, gif: '/commicon.gif' , name: 'Commsweeper', route: '/minesweeper' },
   ];
 
@@ -135,6 +136,7 @@ function App() {
       <Route path="/events" element={<Events />} />
       <Route path="/loading" element={<Loading />} />
       <Route path="/photos" element={<PhotoGallery />} />
+      <Route path="/news" element={<News />} />
       <Route path="/error" element={<Error />} />
       <Route path="/map" element={<Map />} />
       <Route path="/minesweeper" element={<Minesweeper />} />
