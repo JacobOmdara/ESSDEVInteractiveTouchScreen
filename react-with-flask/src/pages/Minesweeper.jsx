@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ROWS = 9;
@@ -62,18 +62,63 @@ const revealCells = (board, row, col) => {
 
 const NUMBER_COLORS = ['', '#2563eb', '#16a34a', '#dc2626', '#7c3aed', '#b91c1c', '#0891b2', '#000', '#6b7280'];
 
+const LcdDisplay = ({ value, imgSrc, centered }) => {
+  const display = String(Math.min(Math.max(value, 0), 999)).padStart(3, '0');
+  return (
+    <div style={{
+      background: '#1a0000',
+      border: '3px solid rgba(255,255,255,0.2)',
+      borderRadius: '12px',
+      padding: '10px 16px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: centered ? 'center' : 'flex-start',
+      gap: '10px',
+      minWidth: '130px',
+    }}>
+      {imgSrc && <img src={imgSrc} alt="icon" style={{ width: '44px', height: '44px', objectFit: 'contain' }} />}
+      <span style={{
+        fontFamily: "'Courier New', monospace",
+        fontSize: '36px',
+        fontWeight: '900',
+        color: '#ff3333',
+        letterSpacing: '4px',
+        textShadow: '0 0 8px rgba(255,50,50,0.7)',
+        minWidth: '70px',
+        textAlign: centered ? 'center' : 'right',
+      }}>
+        {display}
+      </span>
+    </div>
+  );
+};
+
 const Minesweeper = () => {
   const [board, setBoard] = useState(createEmptyBoard());
-  const [gameState, setGameState] = useState('idle'); // idle, playing, won, lost
+  const [gameState, setGameState] = useState('idle');
   const [flagMode, setFlagMode] = useState(false);
   const [firstClick, setFirstClick] = useState(true);
+  const [timer, setTimer] = useState(0);
+  const timerRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (gameState === 'playing') {
+      timerRef.current = setInterval(() => {
+        setTimer(t => t >= 999 ? 999 : t + 1);
+      }, 1000);
+    } else {
+      clearInterval(timerRef.current);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [gameState]);
 
   const handleReset = useCallback(() => {
     setBoard(createEmptyBoard());
     setGameState('idle');
     setFlagMode(false);
     setFirstClick(true);
+    setTimer(0);
   }, []);
 
   const checkWin = (b) => {
@@ -90,8 +135,7 @@ const Minesweeper = () => {
 
     if (flagMode) {
       const newBoard = board.map(r => r.map(c => ({ ...c })));
-      const wasFlag = newBoard[row][col].isFlagged;
-      newBoard[row][col].isFlagged = !wasFlag;
+      newBoard[row][col].isFlagged = !newBoard[row][col].isFlagged;
       setBoard(newBoard);
       return;
     }
@@ -158,15 +202,15 @@ const Minesweeper = () => {
     if (cell.isFlagged && !cell.isRevealed) return '🚩';
     if (cell.isRevealed && cell.isMine) {
       return (
-        <img 
-          src="/commerce.png" 
-          alt="mine" 
-          style={{ 
-            width: '60px', 
-            height: '60px', 
+        <img
+          src="/commerce.png"
+          alt="mine"
+          style={{
+            width: '60px',
+            height: '60px',
             objectFit: 'contain',
             filter: cell.exploded ? 'drop-shadow(0 0 10px red) brightness(1.2)' : 'none'
-          }} 
+          }}
         />
       );
     }
@@ -182,6 +226,8 @@ const Minesweeper = () => {
     ? '/looking.png'
     : '/good.png';
 
+  const gridWidth = (COLS * 80) + ((COLS - 1) * 8);
+
   return (
     <div style={{
       display: 'flex',
@@ -190,7 +236,7 @@ const Minesweeper = () => {
       background: '#111',
       padding: '40px',
       boxSizing: 'border-box',
-      fontFamily: 'serif', // Matches your "everything else is serif" requirement
+      fontFamily: 'serif',
     }}>
 
       {/* Top Bar */}
@@ -211,50 +257,43 @@ const Minesweeper = () => {
           ← Back
         </button>
 
-        <div style={{ 
-          color: 'white', 
-          fontSize: '36px', 
-          fontWeight: '900', 
+        <div style={{
+          color: 'white',
+          fontSize: '36px',
+          fontWeight: '900',
           letterSpacing: '4px',
-          fontFamily: '"Volkhov", serif' // Specifically Volkhov
+          fontFamily: '"Volkhov", serif'
         }}>
           COMMSWEEPER
         </div>
 
-        <div style={{
-          background: 'rgba(255,255,255,0.1)',
-          border: '3px solid rgba(255,255,255,0.2)',
-          borderRadius: '15px',
-          padding: '15px 25px',
-          color: '#f87171',
-          fontSize: '32px',
-          fontWeight: '700',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '15px'
-        }}>
-          <img src="/commerce.png" alt="Mines" style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
-          {MINES - flagCount}
-        </div>
+        <div style={{ width: '130px' }} />
       </div>
 
       {/* Centering Container */}
-      <div style={{ 
-        flex: 1, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        justifyContent: 'center', 
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
-        gap: '40px' 
+        gap: '30px'
       }}>
-        
-        {/* Status Image Bar */}
-        <div style={{ minHeight: '100px', display: 'flex', alignItems: 'center' }}>
+
+        {/* HUD Row: Bomb Count | Status Image | Timer */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: `${gridWidth + 40}px`,
+        }}>
+          <LcdDisplay value={MINES - flagCount} imgSrc="/commerce.png" />
           <img
             src={statusImage}
             alt="status"
-            style={{ height: '100px', objectFit: 'contain', transition: 'all 0.3s' }}
+            style={{ height: '90px', objectFit: 'contain', transition: 'all 0.3s' }}
           />
+          <LcdDisplay value={timer} centered />
         </div>
 
         {/* Grid */}
@@ -281,11 +320,11 @@ const Minesweeper = () => {
           )}
         </div>
 
-        {/* Controls - Matched to Grid Width */}
+        {/* Controls */}
         <div style={{
           display: 'flex',
           gap: '20px',
-          width: `${(COLS * 80) + (COLS * 8)}px`,
+          width: `${gridWidth}px`,
         }}>
           <button
             onPointerDown={() => setFlagMode(f => !f)}
